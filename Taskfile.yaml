@@ -27,7 +27,7 @@ tasks:
     vars:
       DESC: Runs the tests with verbose output
     cmds:
-      - pytest -v
+      - pytest -vv
 
   install:
     desc: "{{ .DESC }}"

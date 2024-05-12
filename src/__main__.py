@@ -18,6 +18,7 @@ def main():
     outbox = get_mastodon_outbox()
     outbox_objects = get_mastodon_posts(outbox)
     if not outbox_objects:
+        # TODO log the error
         return
     parsed_content = get_content(outbox_objects)
     mstd_data_file = os.getenv("MSTD_DATA_FILE")
