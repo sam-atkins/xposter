@@ -11,7 +11,7 @@ tasks:
     vars:
       DESC: Runs the script to cross-post
     cmds:
-      - python src/main.py
+      - python -m src
 
   test:
     desc: "{{ .DESC }}"
@@ -20,6 +20,14 @@ tasks:
       DESC: Runs the tests
     cmds:
       - pytest
+
+  testv:
+    desc: "{{ .DESC }}"
+    summary: "{{ .DESC }}"
+    vars:
+      DESC: Runs the tests with verbose output
+    cmds:
+      - pytest -v
 
   install:
     desc: "{{ .DESC }}"
