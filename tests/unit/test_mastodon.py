@@ -8,15 +8,16 @@ def test_get_posts_to_cross_post():
     with open("tests/data/outbox.json") as f:
         outbox = json.load(f)
     outbox = get_mastodon_posts(outbox)
-    content = get_content(outbox)
+    if outbox is not None:
+        content = get_content(outbox)
 
-    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tmp:
-        with open("tests/data/mstd.json") as f:
-            data = json.load(f)
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tmp:
+            with open("tests/data/mstd.json") as f:
+                data = json.load(f)
 
-        json.dump(data, tmp)
+            json.dump(data, tmp)
 
-    result = get_posts_to_cross_post(content, tmp.name)
+        result = get_posts_to_cross_post(content, tmp.name)
     assert result == [
         {
             "id": "112418369440902630",
@@ -65,7 +66,6 @@ def test_get_content():
     with open("tests/data/outbox.json") as f:
         outbox = json.load(f)
 
-    # call get_mastodon_posts(outbox)
     outbox = get_mastodon_posts(outbox)
     result = get_content(outbox)
     assert len(result) == 5
