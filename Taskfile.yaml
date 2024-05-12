@@ -1,0 +1,31 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  run:
+    desc: "{{ .DESC }}"
+    summary: "{{ .DESC }}"
+    vars:
+      DESC: Runs the script to cross-post
+    cmds:
+      - python src/main.py
+
+  test:
+    desc: "{{ .DESC }}"
+    summary: "{{ .DESC }}"
+    vars:
+      DESC: Runs the tests
+    cmds:
+      - pytest
+
+  install:
+    desc: "{{ .DESC }}"
+    summary: "{{ .DESC }}"
+    vars:
+      DESC: Install the dependencies in a virtual environment, using the tool uv.
+    cmds:
+      - uv venv
+      - source venv/bin/activate && uv pip install -r requirements.txt
