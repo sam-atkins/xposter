@@ -3,6 +3,7 @@ import sys
 
 from dotenv import load_dotenv
 
+from src.bsky import post_to_bsky
 from src.mastodon import (
     get_content,
     get_mastodon_outbox,
@@ -28,7 +29,14 @@ def main():
         sys.exit("MSTD_DATA_FILE not set in .env")
 
     posts_to_cross_post = get_posts_to_cross_post(parsed_content, mstd_data_file)
+    if not posts_to_cross_post:
+        print("No posts to cross-post")
+        sys.exit()
+
+    print("Posts to cross-post:")
     print(posts_to_cross_post)
+    post_to_bsky(posts_to_cross_post)
+    print("Cross-posted to Bluesky")
 
 
 if __name__ == "__main__":

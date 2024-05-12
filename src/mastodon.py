@@ -1,6 +1,5 @@
 import json
 import os
-from typing import Optional
 
 import requests
 from dotenv import load_dotenv
@@ -11,7 +10,9 @@ from src.parsers import parse_content, parse_post_id
 load_dotenv()
 
 
-def get_posts_to_cross_post(content_objects: list[dict], mstd_data_file: str):
+def get_posts_to_cross_post(
+    content_objects: list[dict], mstd_data_file: str
+) -> list[dict]:
     posts = []
     data = _get_mstd_data(mstd_data_file)
     for content_object in content_objects:
@@ -54,11 +55,8 @@ def get_content(content_objects: list[dict]):
     return parsed_content
 
 
-def get_mastodon_posts(outbox: dict) -> Optional[list[dict]]:
-    ordered_items = outbox.get("orderedItems")
-    if not ordered_items:
-        # TODO log the error
-        return
+def get_mastodon_posts(outbox: dict) -> list[dict]:
+    ordered_items = outbox.get("orderedItems", {})
 
     raw_posts = []
     for item in ordered_items:
@@ -69,9 +67,9 @@ def get_mastodon_posts(outbox: dict) -> Optional[list[dict]]:
 
 
 def get_mastodon_outbox() -> dict:
+    # TODO handle if env vars not set, as part of config mgmt
     mastodon_url = os.getenv("MASTODON_HOST")
     mastodon_user = os.getenv("MASTODON_USER")
-    # TODO handle if env vars not set, as part of config mgmt
 
     mastodon_url = f"{mastodon_url}/users/{mastodon_user}/outbox?page=true"
     response = requests.get(mastodon_url)
