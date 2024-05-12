@@ -3,19 +3,10 @@ from typing import Optional
 
 import requests
 from dotenv import load_dotenv
-from parsers import parse_content, parse_post_id
+from src.parsers import parse_content, parse_post_id
 
 # Load the .env file
 load_dotenv()
-
-
-def main():
-    outbox = get_mastodon_outbox()
-    outbox_objects = get_mastodon_posts(outbox)
-    if not outbox_objects:
-        return
-    parsed_content = get_content(outbox_objects)
-    print(parsed_content)
 
 
 def get_content(content_objects: list[dict]):
@@ -39,6 +30,10 @@ def get_content(content_objects: list[dict]):
                 "timestamp": timestamp,
             }
         )
+
+    # Sort the list of dictionaries by the timestamp, oldest first
+    parsed_content = sorted(parsed_content, key=lambda x: x["timestamp"])
+
     return parsed_content
 
 
@@ -65,7 +60,3 @@ def get_mastodon_outbox() -> dict:
     response = requests.get(mastodon_url)
 
     return response.json()
-
-
-if __name__ == "__main__":
-    main()
