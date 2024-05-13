@@ -10,7 +10,6 @@ def main():
     config = load_config()
 
     mstd_client = MastodonClient(config.mastodon_host, config.mastodon_user)
-
     mastodon = Mastodon(
         mstd_client,
         config.mastodon_data_file,
