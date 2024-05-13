@@ -1,41 +1,32 @@
-import os
 import sys
 
-from dotenv import load_dotenv
-
-from src.bsky import post_to_bsky
-from src.mastodon import (
-    get_content,
-    get_mastodon_outbox,
-    get_mastodon_posts,
-    get_posts_to_cross_post,
-)
-
-# Load the .env file
-load_dotenv()
+from src.bsky import Bluesky
+from src.config import load_config
+from src.http import BlueskyClient, MastodonClient
+from src.mastodon import Mastodon
 
 
 def main():
-    outbox = get_mastodon_outbox()
-    outbox_objects = get_mastodon_posts(outbox)
-    if not outbox_objects:
-        # TODO log the error
-        return
-    parsed_content = get_content(outbox_objects)
-    mstd_data_file = os.getenv("MSTD_DATA_FILE")
+    config = load_config()
 
-    # TODO refactor to handle all config
-    if not mstd_data_file:
-        sys.exit("MSTD_DATA_FILE not set in .env")
+    mstd_client = MastodonClient(config.mastodon_host, config.mastodon_user)
 
-    posts_to_cross_post = get_posts_to_cross_post(parsed_content, mstd_data_file)
+    mastodon = Mastodon(
+        mstd_client,
+        config.mastodon_data_file,
+    )
+    posts_to_cross_post = mastodon.get_posts_to_cross_post()
+
     if not posts_to_cross_post:
         print("No posts to cross-post")
         sys.exit()
 
     print("Posts to cross-post:")
     print(posts_to_cross_post)
-    post_to_bsky(posts_to_cross_post)
+
+    bsky_client = BlueskyClient(config.bluesky_handle, config.bluesky_password)
+    bluesky = Bluesky(bsky_client)
+    bluesky.post(posts_to_cross_post)
     print("Cross-posted to Bluesky")
 
 

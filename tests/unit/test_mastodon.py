@@ -1,23 +1,40 @@
 import json
 import tempfile
 
-from src.mastodon import get_content, get_mastodon_posts, get_posts_to_cross_post
+import pytest
+
+from src.http import AbstractClient
+from src.mastodon import Mastodon
+from tests.data.outbox import MASTODON_OUTBOX
 
 
-def test_get_posts_to_cross_post():
-    with open("tests/data/outbox.json") as f:
-        outbox = json.load(f)
-    outbox = get_mastodon_posts(outbox)
-    if outbox is not None:
-        content = get_content(outbox)
+class MockMastodonClient(AbstractClient):
+    def __init__(self):
+        pass
 
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tmp:
-            with open("tests/data/mstd.json") as f:
-                data = json.load(f)
+    def get(self):
+        return MASTODON_OUTBOX
 
-            json.dump(data, tmp)
+    def post(self, posts: list[dict]):
+        pass
 
-        result = get_posts_to_cross_post(content, tmp.name)
+
+@pytest.fixture
+def client():
+    return MockMastodonClient
+
+
+def test_get_posts_to_cross_post(client):
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as tmp:
+        with open("tests/data/mstd.json") as f:
+            data = json.load(f)
+
+        json.dump(data, tmp)
+
+    mock_client = client()
+    mstd = Mastodon(mock_client, tmp.name)
+
+    result = mstd.get_posts_to_cross_post()
     assert result == [
         {
             "id": "112418369440902630",
@@ -53,21 +70,20 @@ def test_get_posts_to_cross_post():
         }
 
 
-def test_get_mastodon_posts():
-    with open("tests/data/outbox.json") as f:
-        outbox = json.load(f)
+def test_get_mastodon_posts(client):
+    mock_client = client()
+    mstd = Mastodon(mock_client, "tmp_file")
 
-    outbox = get_mastodon_posts(outbox)
+    outbox = mstd._get_raw_posts()
     assert outbox is not None
     assert len(outbox) == 6
 
 
-def test_get_content():
-    with open("tests/data/outbox.json") as f:
-        outbox = json.load(f)
+def test_get_content(client):
+    mock_client = client()
+    mstd = Mastodon(mock_client, "tmp_file")
 
-    outbox = get_mastodon_posts(outbox)
-    result = get_content(outbox)
+    result = mstd._get_content()
     assert len(result) == 5
     assert result == [
         {

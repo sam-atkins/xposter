@@ -13,6 +13,23 @@ tasks:
     cmds:
       - python -m src
 
+  check:
+    desc: "{{ .DESC }}"
+    summary: "{{ .DESC }}"
+    vars:
+      DESC: Lint and run tests
+    cmds:
+      - task: lint
+      - task: test
+
+  lint:
+    desc: "{{ .DESC }}"
+    summary: "{{ .DESC }}"
+    vars:
+      DESC: Lint the code using ruff
+    cmds:
+      - ruff check --fix
+
   test:
     desc: "{{ .DESC }}"
     summary: "{{ .DESC }}"
