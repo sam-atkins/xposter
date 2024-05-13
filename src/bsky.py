@@ -4,6 +4,10 @@ from src.http import BlueskyClient
 
 
 class Bluesky:
+    """
+    Responsible for interactions with Bluesky.
+    """
+
     def __init__(self, bluesky_client: BlueskyClient):
         self.client = bluesky_client
 
@@ -11,11 +15,17 @@ class Bluesky:
         raise NotImplementedError
 
     def post(self, posts: list[dict]):
+        """
+        Post to Bluesky.
+        """
         for post in posts:
             rich_text = self._build_rich_text(post["content"])
             self.client.post(rich_text)
 
     def _build_rich_text(self, content: str):
+        """
+        Build rich text for Bluesky.
+        """
         text_builder = client_utils.TextBuilder()
         words = content.split()
 

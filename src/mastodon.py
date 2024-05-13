@@ -5,11 +5,22 @@ from src.parsers import parse_content, parse_post_id
 
 
 class Mastodon:
+    """
+    Responsible for interactions with Mastodon.
+    """
+
     def __init__(self, client: AbstractClient, mastodon_data_file: str):
         self.client = client
         self.mastodon_data_file = mastodon_data_file
 
     def get_posts_to_cross_post(self) -> list[dict]:
+        """
+        Get posts to cross-post:
+
+            - only posts that are not replies are considered
+            - posts are sorted by timestamp, oldest first
+            - posts are not cross-posted if they are already in the "db"
+        """
         posts = []
         data = self._get_mstd_data(self.mastodon_data_file)
         for content_object in self._get_content():

@@ -11,7 +11,7 @@ tasks:
     vars:
       DESC: Runs the script to cross-post
     cmds:
-      - python -m src
+      - source .venv/bin/activate && python -m src
 
   check:
     desc: "{{ .DESC }}"
