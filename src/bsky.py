@@ -28,6 +28,12 @@ def _build_rich_text(content: str):
                 text_builder.tag(f"#{tag}", tag)
             else:
                 text_builder.tag(f" #{tag}", tag)
+        elif word.startswith("http"):
+            url = word
+            if i == 0:
+                text_builder.link(url, url)
+            else:
+                text_builder.link(f" {url}", url)
         else:
             if i == 0:
                 text_builder.text(word)
