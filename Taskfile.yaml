@@ -29,6 +29,7 @@ tasks:
       DESC: Lint the code using ruff
     cmds:
       - ruff check --fix
+      - ruff format
 
   test:
     desc: "{{ .DESC }}"
