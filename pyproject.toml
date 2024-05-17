@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xposter"
+version = "0.1.0"
+description = "A cross poster from Mastodon to Bluesky."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT License"}
+keywords = []
+authors = [
+  { name = "Sam Atkins", email = "samatkins@outlook.com" },
+]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "atproto==0.0.46",
+    "beautifulsoup4==4.12.3",
+    "pydantic==2.7.1",
+    "requests==2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "ruff>=0.4.4",
+]
+
+[project.urls]
+Documentation = "https://github.com/sam-atkins/xposter#readme"
+Issues = "https://github.com/sam-atkins/xposter/issues"
+Source = "https://github.com/sam-atkins/xposter"
