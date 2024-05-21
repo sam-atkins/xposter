@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 import requests
 from atproto import Client, client_utils
@@ -17,7 +18,7 @@ class AbstractClient(ABC):
         pass
 
     @abstractmethod
-    def post(self):
+    def post(self, content: Any):
         pass
 
 
@@ -35,7 +36,7 @@ class MastodonClient(AbstractClient):
         response = requests.get(url)
         return response.json()
 
-    def post(self):
+    def post(self, content: Any):
         raise NotImplementedError
 
 
