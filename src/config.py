@@ -14,16 +14,17 @@ class Config(BaseModel):
 
 
 def load_config() -> Config:
-    home_dir = Path.home()
-    config_file = home_dir / ".config" / "xposter" / "config.toml"
+    """
+    Load the configuration file from the config directory..
+    """
+    config_file = build_config_path()
 
     if not config_file.exists():
         sys.exit(
             f"❌  Config file not found: {config_file}. Check the docs to setup the configuration."
         )
 
-    with open(config_file, "rb") as f:
-        data = tomllib.load(f)
+    data = open_file(config_file)
 
     return Config(
         bluesky_handle=data["bluesky_handle"],
@@ -32,3 +33,20 @@ def load_config() -> Config:
         mastodon_host=data["mastodon_host"],
         mastodon_user=data["mastodon_user"],
     )
+
+
+def build_config_path():
+    """
+    Build the path to the configuration file
+    """
+    home_dir = Path.home()
+    config_file = home_dir / ".config" / "xposter" / "config.toml"
+    return config_file
+
+
+def open_file(config_file):
+    """
+    Open the configuration file
+    """
+    with open(config_file, "rb") as f:
+        return tomllib.load(f)
